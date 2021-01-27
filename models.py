@@ -73,7 +73,7 @@ class DiscriminatorSLWAE2(nn.Module):
         self.sigmoid = nn.Sigmoid()
         self.lin3 = nn.Linear(self.lin2h, 1)
         self.linae = nn.Linear(n_annotators, self.aedims)
-
+        self.norm1 = nn.BatchNorm2d(self.aedims)
         self.dis = nn.Sequential(
             nn.Linear(n_instances * n_classes, 128),
             nn.ReLU(True),
@@ -84,7 +84,7 @@ class DiscriminatorSLWAE2(nn.Module):
         x = x.reshape(x.shape[0], -1)
         x = self.dis(x)
         x = torch.cat((x, self.linae(torch.eye(self.n_annotators).to(self.device))), 1)
-        x = self.lin2(x)
+        x = self.lin2(self.norm1(x))
         x = self.relu(x)
 
         x = self.sigmoid(self.lin3(x))
