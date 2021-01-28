@@ -73,7 +73,7 @@ class DiscriminatorSLWAE2(nn.Module):
         self.sigmoid = nn.Sigmoid()
         self.lin3 = nn.Linear(self.lin2h, 1)
         self.linae = nn.Linear(n_annotators, self.aedims)
-        self.norm1 = nn.BatchNorm2d(self.aedims)
+        self.norm1 = nn.BatchNorm1d(self.aedims + 64)
         self.dis = nn.Sequential(
             nn.Linear(n_instances * n_classes, 128),
             nn.ReLU(True),
