@@ -1,3 +1,5 @@
 labelme/
 .idea/
 __pycache__/
+*.tar.gz
+results/
