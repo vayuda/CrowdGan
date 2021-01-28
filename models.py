@@ -76,6 +76,7 @@ class DiscriminatorSLWAE2(nn.Module):
         self.norm1 = nn.BatchNorm1d(self.aedims + 64)
         self.dis = nn.Sequential(
             nn.Linear(n_instances * n_classes, 128),
+            nn.BatchNorm1d(128),
             nn.ReLU(True),
             nn.Linear(128, 64),
         )
