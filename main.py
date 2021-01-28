@@ -206,7 +206,7 @@ def CFGAN_train():
     random.seed(seed)
     torch.manual_seed(seed)
     device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
-    prefix = "v2.3"
+    prefix = "v2.4"
     if not os.path.exists(f"results/{prefix}"):
         os.makedirs(f"results/{prefix}")
     trials = 5
@@ -216,7 +216,7 @@ def CFGAN_train():
     lr_g = [1e-4]
     num_hidden = [32]
     n_d_train = [5]
-    models = [DiscriminatorSLWAE2]
+    models = [DiscriminatorLatest]
     configurations = list(product(num_epochs, num_hidden, models, batch_size, lr_g, lr_d, n_d_train))
     train_data_vgg16 = torch.from_numpy(np.load('labelme/prepared/data_train_vgg16.npy'))
     crowd_labels = torch.load("crowd_labels_onehot.pt")
@@ -252,7 +252,8 @@ def CFGAN_train():
             discriminator.apply(weights_init)
             # discriminator = torch.load("models/discriminator.pt")
 
-            title = f'lrd{lr_d}lrg{lr_g}s{seed}b{batch_size}n{n_d_train}'
+            # numbers are in order of: learning rate discriminator, generator, seed, batchsize
+            title = f'model_{str(discriminator)}_{lr_d:.3f}_{lr_g:.3f}_{seed}_{batch_size}'
 
             dataloader = DataLoader(train_data_crowd, batch_size=batch_size,
                                     shuffle=True, num_workers=num_workers, drop_last=True)
@@ -260,8 +261,8 @@ def CFGAN_train():
             optimizer_g = Adam(generator.parameters(), lr=lr_g)
             optimizer_d = Adam(discriminator.parameters(), lr=lr_d)
 
-            real_target = torch.ones(n_annotators).to(device)
-            fake_target = torch.zeros(n_annotators).to(device)
+            real_target = torch.ones(n_annotators,1).to(device)
+            fake_target = torch.zeros(n_annotators,1).to(device)
 
             loss_d, loss_g, test_acc, acc_authentic, acc_generated = [], [], [], [], []
             for ep in trange(num_epochs, desc=title):

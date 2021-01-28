@@ -50,7 +50,7 @@ class CrowdNetwork(nn.Module):
         return self.crowd_layer(x)
 
 
-class DiscriminatorSLWAE2(nn.Module):
+class DiscriminatorLatest(nn.Module):
     """
     Has Seperate Linear Weights for each class and Annotator Embeddings with higher dim than v1
     """
@@ -92,7 +92,7 @@ class DiscriminatorSLWAE2(nn.Module):
         return x
 
     def __str__(self):
-        return "DiscriminatorSLWAE"
+        return "DiscriminatorLatest"
 
 class DiscriminatorSLWAE(nn.Module):
     """
