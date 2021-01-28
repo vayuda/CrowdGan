@@ -78,6 +78,7 @@ class DiscriminatorLatest(nn.Module):
             nn.Linear(n_instances * n_classes, 128),
             nn.BatchNorm1d(128),
             nn.ReLU(True),
+            nn.Dropout(.5),
             nn.Linear(128, 64),
         )
 
@@ -86,8 +87,7 @@ class DiscriminatorLatest(nn.Module):
         x = self.dis(x)
         x = torch.cat((x, self.linae(torch.eye(self.n_annotators).to(self.device))), 1)
         x = self.lin2(self.norm1(x))
-        x = self.relu(x)
-
+        x = self.drop(self.relu(x))
         x = self.sigmoid(self.lin3(x))
         return x
 
